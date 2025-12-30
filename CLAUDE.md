@@ -8,128 +8,85 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Среда разработки
 
-### Использование Laravel Sail (Docker)
+### Использование Makefile
 
-Запуск окружения разработки:
+Проект использует Makefile для унификации команд. Makefile автоматически определяет, запущен ли Docker, и использует соответствующие команды (Sail или напрямую).
+
+Справка по доступным командам:
 ```bash
-./vendor/bin/sail up -d
+make help
 ```
-
-Остановка окружения разработки:
-```bash
-./vendor/bin/sail down
-```
-
-Доступ к shell контейнера:
-```bash
-./vendor/bin/sail shell
-```
-
-Выполнение artisan команд:
-```bash
-./vendor/bin/sail artisan <команда>
-```
-
-Выполнение composer команд:
-```bash
-./vendor/bin/sail composer <команда>
-```
-
-### Использование Composer скриптов (без Docker)
-
-Запуск полного стека разработки (сервер, очереди, логи и Vite):
-```bash
-composer dev
-```
-
-Это параллельно запускает:
-- `php artisan serve` - Сервер разработки
-- `php artisan queue:listen --tries=1` - Обработчик очередей
-- `php artisan pail --timeout=0` - Логи в реальном времени
-- `npm run dev` - Vite dev сервер для ассетов
 
 ### Первоначальная настройка
 
 ```bash
-composer setup
+make setup
 ```
 
-Выполняет: composer install, создание .env, генерацию app key, миграции, npm install и сборку ассетов.
+Выполняет: composer install, создание .env, генерацию app key, миграции.
+
+### Docker команды
+
+```bash
+make up              # Запустить Docker контейнеры
+make down            # Остановить Docker контейнеры
+make shell           # Войти в shell контейнера
+make logs            # Показать логи контейнеров
+```
 
 ## Основные команды
 
-### Тестирование
-
-Запуск всех тестов:
-```bash
-composer test
-# или
-php artisan test
-# или с Sail
-./vendor/bin/sail artisan test
-```
-
-Запуск конкретного набора тестов:
-```bash
-php artisan test --testsuite=Unit
-php artisan test --testsuite=Feature
-```
-
-Запуск конкретного файла тестов:
-```bash
-php artisan test tests/Feature/ExampleTest.php
-```
-
-Запуск конкретного тестового метода:
-```bash
-php artisan test --filter test_example
-```
-
 ### База данных
 
-Выполнение миграций:
 ```bash
-php artisan migrate
-# или с Sail
-./vendor/bin/sail artisan migrate
+make migrate              # Запустить миграции
+make migrate-fresh        # Пересоздать БД с миграциями
+make migrate-fresh-seed   # Пересоздать БД с заполнением
+make seed                 # Заполнить БД тестовыми данными
 ```
 
-Откат миграций:
+### Тестирование
+
 ```bash
-php artisan migrate:rollback
+make test                 # Запустить все тесты
+make test-unit            # Запустить юнит-тесты
+make test-feature         # Запустить функциональные тесты
+make test-coverage        # Запустить тесты с покрытием
 ```
 
-Пересоздание БД с заполнением:
+Для запуска конкретного файла или метода используйте artisan напрямую:
 ```bash
-php artisan migrate:fresh --seed
+php artisan test tests/Feature/ExampleTest.php
+php artisan test --filter test_example
 ```
 
 ### Качество кода
 
-Форматирование кода (Laravel Pint):
 ```bash
-./vendor/bin/pint
-```
-
-Статический анализ кода (Larastan):
-```bash
-./vendor/bin/phpstan analyse
-# или с Sail
-./vendor/bin/sail phpstan analyse
+make format               # Форматировать код (Pint)
+make format-test          # Проверить форматирование без изменений
+make analyse              # Статический анализ кода (Larastan)
+make check                # Полная проверка (форматирование + анализ + тесты)
 ```
 
 Конфигурация Larastan находится в `phpstan.neon.dist`. Текущий уровень анализа: 5 (из 9).
 
-### Фронтенд ассеты
+### Разработка
 
-Сборка ассетов для разработки:
 ```bash
-npm run dev
+make serve                # Запустить dev сервер
+make queue                # Запустить обработчик очередей
+make queue-work           # Запустить queue worker
+make tinker               # Запустить tinker (REPL)
+make routes               # Показать все маршруты
 ```
 
-Сборка ассетов для продакшена:
+### Очистка и оптимизация
+
 ```bash
-npm run build
+make clear-cache          # Очистить все кеши
+make optimize             # Оптимизировать для production
+make clean                # Очистить временные файлы
 ```
 
 ## Архитектура
@@ -159,6 +116,7 @@ npm run build
 - **Тестирование email**: Mailpit
 - **Тестирование**: PHPUnit 11
 - **Качество кода**: Laravel Pint (форматирование), Larastan (статический анализ)
+- **Автоматизация**: Makefile для унификации команд разработки
 
 ### Docker сервисы
 
