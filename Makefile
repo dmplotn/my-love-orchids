@@ -6,13 +6,14 @@ ifdef DOCKER_RUNNING
     SAIL := ./vendor/bin/sail
     ARTISAN := $(SAIL) artisan
     COMPOSER := $(SAIL) composer
-    PHPSTAN := $(SAIL) phpstan
 else
     SAIL :=
     ARTISAN := php artisan
     COMPOSER := composer
-    PHPSTAN := ./vendor/bin/phpstan
 endif
+
+# PHPStan всегда запускается напрямую
+PHPSTAN := ./vendor/bin/phpstan
 
 # Цвета для вывода
 GREEN  := $(shell tput -Txterm setaf 2)
@@ -98,7 +99,7 @@ format-test: ## Проверить форматирование без изме�
 	./vendor/bin/pint --test
 
 analyse: ## Статический анализ кода (Larastan)
-	$(PHPSTAN) analyse
+	$(PHPSTAN) analyse --memory-limit=256M
 
 check: format-test analyse test ## Полная проверка (форматирование + анализ + тесты)
 

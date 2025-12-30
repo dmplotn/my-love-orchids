@@ -8,6 +8,9 @@ parameters:
     # Level 9 is the highest level
     level: 5
 
+    # Увеличиваем лимит памяти для анализа
+    tmpDir: .phpstan.cache
+
     ignoreErrors:
         # Add patterns to ignore here if needed
 
