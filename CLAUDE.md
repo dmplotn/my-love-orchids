@@ -111,6 +111,15 @@ php artisan migrate:fresh --seed
 ./vendor/bin/pint
 ```
 
+Статический анализ кода (Larastan):
+```bash
+./vendor/bin/phpstan analyse
+# или с Sail
+./vendor/bin/sail phpstan analyse
+```
+
+Конфигурация Larastan находится в `phpstan.neon.dist`. Текущий уровень анализа: 5 (из 9).
+
 ### Фронтенд ассеты
 
 Сборка ассетов для разработки:
@@ -149,6 +158,7 @@ npm run build
 - **Frontend**: Tailwind CSS v4, Vite 7
 - **Тестирование email**: Mailpit
 - **Тестирование**: PHPUnit 11
+- **Качество кода**: Laravel Pint (форматирование), Larastan (статический анализ)
 
 ### Docker сервисы
 
