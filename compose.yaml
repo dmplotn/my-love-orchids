@@ -40,14 +40,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test:
-                - CMD
-                - pg_isready
-                - '-q'
-                - '-d'
-                - '${DB_DATABASE}'
-                - '-U'
-                - '${DB_USERNAME}'
+            test: [ CMD, pg_isready, '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USERNAME}' ]
             retries: 3
             timeout: 5s
     valkey:
@@ -59,10 +52,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test:
-                - CMD
-                - valkey-cli
-                - ping
+            test: [ CMD, valkey-cli, ping ]
             retries: 3
             timeout: 5s
     mailpit:
